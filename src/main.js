@@ -74,7 +74,7 @@ async function handleLoadMore() {
     page += 1;
     showLoading();
     try {
-        const data = await fetchData(currentQuery, page += 1); 
+        const data = await fetchData(currentQuery, page); 
         createMarkup(data);
         if (page >= totalPages) {
             hideLoadMore();
