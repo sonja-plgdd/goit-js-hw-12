@@ -38,11 +38,10 @@ async function handleSubmit(event) {
     if (userInput !== '') {
         currentQuery = userInput;
         gallery.innerHTML = '';
-        // page = 1;
-        // updateURL();
+        page = 1;
         showLoading();
         try {
-            const data = await fetchData(currentQuery, page = 1);
+            const data = await fetchData(currentQuery, page);
 
             if (data.hits.length === 0) {
                 iziToast.show({
@@ -58,11 +57,17 @@ async function handleSubmit(event) {
                 totalPages = Math.ceil(data.totalHits / 15);
                 if (page < totalPages) {
                     showLoadMore();
-                } else {
+                } else if(page > totalPages || page === totalPages){
                     hideLoadMore();
+                    iziToast.show({
+                        message: "We're sorry, but you've reached the end of search results.",
+                        backgroundColor: '#ef4040',
+                        messageColor: '#fff',
+                        position: 'topRight',
+                        maxWidth: 432,
+                    })
                 }
             }
-
         } catch (error) {
             console.log(error);
         } finally {
@@ -70,10 +75,11 @@ async function handleSubmit(event) {
         }
     }
 }
+
+
 loadMore.addEventListener('click', handleLoadMore);
 async function handleLoadMore() {
     page += 1;
-    // updateURL();
     showLoading();
     try {
         const data = await fetchData(currentQuery, page); 
@@ -86,11 +92,11 @@ async function handleLoadMore() {
     } finally {
         hideLoading();
     }
+const imageCard = document.querySelector('.gallery-item');
+    const cardHeight = imageCard.getBoundingClientRect().height;
+    window.scrollBy({
+        top: cardHeight * 3 - 72,
+        behavior: "smooth"
+    });
 }
 
-// function updateURL() {
-//     const url = new URL(window.location);
-//     url.searchParams.set('page', page);  // Устанавливаем 
-//     url.searchParams.set('query', currentQuery);  
-//     history.pushState(null, '', url);  
-// }
