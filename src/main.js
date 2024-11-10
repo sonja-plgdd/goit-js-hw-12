@@ -34,14 +34,15 @@ form.addEventListener('submit', handleSubmit);
 async function handleSubmit(event) {
     event.preventDefault();
     const userInput = event.target.elements[0].value.trim();
-
+    
     if (userInput !== '') {
         currentQuery = userInput;
         gallery.innerHTML = '';
-        page = 1;
+        // page = 1;
+        // updateURL();
         showLoading();
         try {
-            const data = await fetchData(currentQuery, page);
+            const data = await fetchData(currentQuery, page = 1);
 
             if (data.hits.length === 0) {
                 iziToast.show({
@@ -72,9 +73,10 @@ async function handleSubmit(event) {
 loadMore.addEventListener('click', handleLoadMore);
 async function handleLoadMore() {
     page += 1;
+    // updateURL();
     showLoading();
     try {
-        const data = await fetchData(currentQuery, page += 1); 
+        const data = await fetchData(currentQuery, page); 
         createMarkup(data);
         if (page >= totalPages) {
             hideLoadMore();
@@ -85,3 +87,10 @@ async function handleLoadMore() {
         hideLoading();
     }
 }
+
+// function updateURL() {
+//     const url = new URL(window.location);
+//     url.searchParams.set('page', page);  // Устанавливаем 
+//     url.searchParams.set('query', currentQuery);  
+//     history.pushState(null, '', url);  
+// }
